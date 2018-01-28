@@ -13,9 +13,9 @@ https://drive.google.com/drive/u/1/folders/1ZuJIs8o1SSbgGQvKZSPJ01QgK-bOC3WQ
 
 Có thể sử dụng pip để cài đặt các lib cần thiết sau cho python:
 ```Shell
-opencv-python : https://pypi.python.org/pypi/opencv-python
-schedule : https://pypi.python.org/pypi/schedule
-pydrive : https://pythonhosted.org/PyDrive
+opencv-python (Capture video): https://pypi.python.org/pypi/opencv-python
+schedule (Hẹn lịch chạy): https://pypi.python.org/pypi/schedule
+pydrive (Upload Google Drive): https://pythonhosted.org/PyDrive
 ```
 
 ### Hướng dẫn sử dụng script
