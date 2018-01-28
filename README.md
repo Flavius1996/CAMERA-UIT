@@ -32,7 +32,7 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
 ```
 
 ### Các tùy chọn thông số ARGS
-**-camera_link**: đường dẫn đến dòng stream của camera cần capture
+**-camera_link**: đường dẫn đến stream của camera cần capture
 
 **-camera_name**: tên sẽ được đặt cho camera này, nên đặt tên khác nhau cho mỗi camera.
 
