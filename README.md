@@ -25,9 +25,9 @@ pydrive : https://pythonhosted.org/PyDrive
 git clone https://github.com/Flavius1996/CAMERA-UIT.git
 ```
 
-2. Truy cập VPN vào cùng UIT network với camera. Bỏ qua bước này nếu đang ở cùng local network với camera cần capture.
+2. Truy cập VPN tới một máy server UIT Cloud.
 
-3. Chạy CameraUIT.py
+3. Chạy CameraUIT.py trên máy server đó:
 ```Shell
 python CameraUIT.py [Các thông số ARGS truyền vào]
 ```
