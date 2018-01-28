@@ -1,8 +1,9 @@
 # CAMERA UIT
 Script thực hiện capture các frames từ camera của UIT
-Ngôn ngữ: Python
 
-Thư mục Google Drive chứa dataset:
+Ngôn ngữ: Python 2.7 (Chưa test trên python 3.6)
+
+Thư mục Google Drive chính sẽ chứa các frame capture được:
 ```Shell
 https://drive.google.com/drive/u/1/folders/1ZuJIs8o1SSbgGQvKZSPJ01QgK-bOC3WQ
 ```
