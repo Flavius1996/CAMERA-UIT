@@ -53,7 +53,7 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
     
     2 - Các frames được lưu ở local và được upload lên thư mục Google Drive ở trên. Các frames được upload ngay sau khi được capture.
     
-    3 - Tương tự mode 2, local folder sẽ được xóa tại khi session của ngày tiếp theo bắt đầu chạy. (Dành cho máy local có dung lượng ổ cứng ít)
+    3 - Tương tự mode 2, tuy nhiên frames chỉ lưu trong 1 ngày, local folder sẽ bị xóa tại khi session của ngày tiếp theo bắt đầu chạy. (Dành cho máy local có dung lượng ổ cứng ít)
 
 
 **-image_quality**: Chất lượng ảnh JPG được nén (default=100%), số này càng thấp ảnh càng tốn ít dung lượng tuy nhiên chất lượng ảnh sẽ thấp.
