@@ -32,7 +32,9 @@ def checkCamera(link):
     success, image = vidcap.read()  
     
     cv2.imwrite('test.jpg', image)
-     
+
+    vidcap.release()
+
     return success
 
 def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name = 'test', sampling_rate = 1, end_time = '08:00', store_mode = 1, img_quality = 100):
@@ -143,6 +145,8 @@ def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name =
         
         count += 1
 
+    vidcap.release()
+    
     print("="*40)
     print('\nDone!\nDay: {}\nTotal frames ={}'.format(date, count_kf))
     print('Local folder: {}'.format(folder_day))
