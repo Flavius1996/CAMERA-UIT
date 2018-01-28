@@ -44,7 +44,7 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
 
 Để chạy 24/24 thì start_time và end_time sẽ là: 00:00 và 23:59
 
-**-store_mode**: Chế độ lưu trữ frame. Các giá trị store_mode có chọn:
+**-store_mode**: Chế độ lưu trữ frame. Các giá trị store_mode có thể chọn:
 
     0 - Các frames chỉ được lưu ở máy tính local tại thư mục: <camera_name>/<DATE>
     
