@@ -48,9 +48,9 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
 
     0 - Các frames chỉ được lưu ở máy tính local tại thư mục: <camera_name>/<DATE>
     
-    1 - Các frames được lưu ở local và được upload lên thư mục Google Drive ở [trên](https://drive.google.com/drive/u/1/folders/1ZuJIs8o1SSbgGQvKZSPJ01QgK-bOC3WQ). Các frames được upload sau khi kết thúc session của một ngày.
+    1 - Các frames được lưu ở local và được upload lên thư mục Google Drive ở trên. Các frames được upload sau khi kết thúc session của một ngày.
     
-    2 - Các frames được lưu ở local và được upload lên thư mục Google Drive ở [trên](https://drive.google.com/drive/u/1/folders/1ZuJIs8o1SSbgGQvKZSPJ01QgK-bOC3WQ). Các frames được upload ngay sau khi được capture.
+    2 - Các frames được lưu ở local và được upload lên thư mục Google Drive ở trên. Các frames được upload ngay sau khi được capture.
     
     3 - Tương tự mode 2, local folder sẽ được xóa tại khi session của ngày tiếp theo bắt đầu chạy. (Dành cho máy local có dung lượng ổ cứng ít)
 
