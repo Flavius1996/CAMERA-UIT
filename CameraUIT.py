@@ -26,6 +26,15 @@ import GDrive_Upload
 import schedule        # install by: pip install schedule
 
 
+def checkCamera(link):
+    '''check to see if capturing camera work'''
+    vidcap = cv2.VideoCapture(link)
+    success, image = vidcap.read()  
+    
+    cv2.imwrite('test.jpg', image)
+     
+    return success
+
 def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name = 'test', sampling_rate = 1, end_time = '08:00', store_mode = 1, img_quality = 100):
     '''
         Extract keyframes from camera stream with sampling rate (number of frames will be taken per second)
@@ -183,7 +192,7 @@ def main():
     parser = argparse.ArgumentParser(description='Keyframes Extraction from Video')
     parser.add_argument('-camera_link', dest='camera_link', help='Link to camera stream', default="rtsp://test:12345@192.168.75.27:554")
     parser.add_argument('-camera_name', dest='camera_name', help='Name of camera stream', default="Front_MMLAB")
-    parser.add_argument('-rate', dest='sampling_rate', type=float,
+    parser.add_argument('-sampling_rate', dest='sampling_rate', type=float,
                        help='sampling rate (number of frames will be taken per second)',
                        default=1)
     parser.add_argument('-start_time', dest='start_time', type=str,
@@ -218,6 +227,27 @@ def main():
     #camera_name = "Front_MMLAB"
     #end_t = int(args.end_time.replace(':', ''))
     #ExtractFrame_FromCameraLink(link = args.camera_link, authdrive, outFolder = args.camera_name, sampling_rate = float(args.sampling_rate), end_t)
+    
+    print("="*20 + 'Capturing frames from UIT CAMERA' + "="*20)
+    print('Camera name: {}'.format(args.camera_name))
+    print('Camera link: {}'.format(args.camera_link))
+    print('Sampling rate: {} frames/s'.format(args.sampling_rate))
+    print('Start time: {}'.format(args.start_time))
+    print('End time: {}'.format(args.end_time))
+    print('Store mode: {}'.format(args.store_mode))
+    print('Image quality: {}'.format(args.image_quality))
+    
+    
+    print('\nChecking capturing camera...')
+    if checkCamera(args.camera_link):
+        print('Capturing status: OK!')
+        print('Check file test.jpg for testing result.')
+    else:
+        print('Something error!')    # Dummy code, above exception in checkCamera() will print error message instead of this
+        return
+        
+    print('\nCurrent system time is: {}'.format(time.strftime("%H:%M:%S")))
+    print('Waiting to start time ...')
     
     schedule.every().day.at(args.start_time).do(ExtractFrame_FromCameraLink, args.camera_link, authdrive, MASTER_FOLDER_ID, 
                           args.camera_name, float(args.sampling_rate), args.end_time, args.store_mode, args.image_quality)
