@@ -113,7 +113,6 @@ def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name =
     print('framestep = {} - extract one frame after each framestep'.format(framestep))
     count_kf = 0
     count = 0
-    prev_time = 0
     
     ############################# EXTRACTING LOOP ############################################## 
     # loop through all frame, only get frame with sampling_rate
@@ -151,41 +150,7 @@ def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name =
     if (store_mode == 1):
         print("="*40) 
         print('UPLOAD FOLDER TO GOOGLE DRIVE')
-        GDrive_Upload.upload_files(authdrive, folder_id, srcFolder)
-    
-
-
-def Upload_To_MyDrive(authdrive, master_Folder_ID, camera_name= 'Front_MMLAB', srcFolder = "Front_MMLAB/Front_MMLAB_27012018"):
-    '''
-      Upload each day result to Google Drive folder:
-        https://drive.google.com/drive/u/1/folders/1ZuJIs8o1SSbgGQvKZSPJ01QgK-bOC3WQ
-        
-      Management Account: 14520956@gm.uit.edu.vn
-      Contact me if get any problem
-    '''
-    
-    #src_folder_name = "Front_MMLAB/Front_MMLAB_27012018"
-    dst_folder_name = os.path.basename(srcFolder)
-   
-    # Get camera_name folder, each camera has its own name
-    camera_folder_ID = GDrive_Upload.get_folder_id(authdrive, master_Folder_ID, camera_name)
-    # Create the folder if it doesn't exists
-    if not camera_folder_ID:
-        print('Creating folder ' + camera_name)
-        camera_folder_ID = GDrive_Upload.create_folder(authdrive, camera_name, master_Folder_ID)
-        
-    folder_id = GDrive_Upload.get_folder_id(authdrive, camera_folder_ID, dst_folder_name)
-
-    # Create the folder if it doesn't exists
-    if not folder_id:
-        print('Creating folder ' + dst_folder_name)
-        folder_id = GDrive_Upload.create_folder(authdrive, dst_folder_name, camera_folder_ID)
-    else:
-        print('Folder {0} already exists'.format(dst_folder_name))
-
-    # Upload the files
-    GDrive_Upload.upload_files(authdrive, folder_id, srcFolder)
-    
+        GDrive_Upload.upload_files(authdrive, folder_id, camera_name + '/' + folder_day)
     
 
 def main():
