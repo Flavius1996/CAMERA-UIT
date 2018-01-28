@@ -37,7 +37,7 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
 
 **-camera_name**: tên sẽ được đặt cho camera này, nên đặt tên khác nhau cho mỗi camera.
 
-**-rate**: sampling rate - số frames sẽ được captured trong 1 giây
+**-sampling_rate**: số frames sẽ được captured trong 1 giây
 
 **-start_time**: thời gian bắt đầu capture trong ngày. Ví dụ input là '07:00' sẽ bắt đầu capture từ 7:00 mỗi ngày.
 
@@ -66,7 +66,7 @@ Cần capture frames từ camera này trong khoảng thời gian từ 7:30 đế
 Câu lệnh sẽ là:
   
 ```Shell
-nice python CameraUIT.py -camera_link rtsp://<id>:<pass>**@192.168.75.27:554 -camera_name Front_MMLAB -rate 3 -start_time 7:30 -end_time 15:00 -store_mode 2 -image_quality 80
+nice python CameraUIT.py -camera_link rtsp://<id>:<pass>**@192.168.75.27:554 -camera_name Front_MMLAB -sampling_rate 3 -start_time 7:30 -end_time 15:00 -store_mode 2 -image_quality 80
 ```
 
 *Sử dụng lệnh nice của linux để không chiếm CPU usage của các Process khác.*
