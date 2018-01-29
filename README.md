@@ -60,7 +60,7 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
 *Ưu tiên sử dụng mode 2 hoặc 3, để upload dữ liệu ngay lập tức và nhanh hơn do phân thành nhiều uploading threads. Mode 1 được sử dụng khi muốn chỉ thực hiện uploading vào end_time và không chiếm dụng nhiều băng thông network khi chạy*
 
 
-**-image_quality**: Chất lượng ảnh JPG được nén (default=100%), số này càng thấp ảnh càng tốn ít dung lượng tuy nhiên chất lượng ảnh sẽ thấp.
+**-image_quality**: Chất lượng ảnh JPG được nén (default=100%), số này càng thấp ảnh càng tốn ít dung lượng tuy nhiên chất lượng ảnh sẽ kém.
 
 ### <<<VÍ DỤ>>>
 Ta có link camera của UIT như sau: "rtsp://id:pass@192.168.75.27:554"
