@@ -43,7 +43,7 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
 
 **-end_time**: thời gian kết thúc capture trong ngày. Ví dụ input là '08:00' sẽ kết thúc capture và 8:00 mỗi ngày.
 
-Để chạy 24/24 thì start_time và end_time sẽ là: 00:00 và 23:59
+*Để chạy 24/24 thì start_time và end_time sẽ là: 00:00 và 23:59, tuy nhiên cần lưu ý dung lượng ổ cứng khả dụng*
 
 **-store_mode**: Chế độ lưu trữ frame. Các giá trị store_mode có thể chọn:
 
@@ -55,7 +55,7 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
     
     3 - Tương tự mode 2, tuy nhiên frames chỉ lưu trong 1 ngày, local folder sẽ bị xóa tại khi session của ngày tiếp theo bắt đầu chạy. (Dành cho máy local có dung lượng ổ cứng ít)
 
-*Ưu tiên sử dụng mode 2 hoặc 3, để upload dữ liệu ngay lập tức và nhanh hơn do phân thành nhiều uploading thread. Mode 1 được sử dụng khi muốn chỉ thực hiện uploading vào end_time và không chiếm dụng nhiều băng thông network khi chạy*
+*Ưu tiên sử dụng mode 2 hoặc 3, để upload dữ liệu ngay lập tức và nhanh hơn do phân thành nhiều uploading threads. Mode 1 được sử dụng khi muốn chỉ thực hiện uploading vào end_time và không chiếm dụng nhiều băng thông network khi chạy*
 
 
 **-image_quality**: Chất lượng ảnh JPG được nén (default=100%), số này càng thấp ảnh càng tốn ít dung lượng tuy nhiên chất lượng ảnh sẽ thấp.
