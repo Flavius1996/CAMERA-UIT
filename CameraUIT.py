@@ -116,20 +116,18 @@ def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name =
     count_kf = 0
     count = 0
     
-    ############################# EXTRACTING LOOP ############################################## 
+    ############################# CAPTURING LOOP ############################################## 
     # loop through all frame, only get frame with sampling_rate
     while success:
         success,image = vidcap.read()
-        
-        date = time.strftime("%d%m%Y")
-        time_hms = time.strftime("%H-%M-%S")
-        
+         
         if (count % framestep == 0):
             count_kf += 1  
             
             if (count_kf % 20 == 0) or (count_kf == 1):    
                 print('\t{}: Extracting at time: {}'.format(count_kf, time.strftime("%H:%M:%S")))
             
+            time_hms = time.strftime("%H-%M-%S")
             imgfilepath = camera_name + "/" + folder_day + "/" + camera_name + "_{}___{}.jpg".format(date + "_" + time_hms, count_kf)
             cv2.imwrite(imgfilepath, image, [int(cv2.IMWRITE_JPEG_QUALITY), img_quality])
         
