@@ -43,9 +43,9 @@ python CameraUIT.py [Các thông số ARGS truyền vào]
 
 **-end_time**: thời gian kết thúc capture trong ngày. Ví dụ input là '08:00' sẽ kết thúc capture và 8:00 mỗi ngày.
 
-*Để chạy 24/24 thì start_time và end_time sẽ là: 00:00 và 23:59, tuy nhiên cần lưu ý dung lượng ổ cứng khả dụng.
+*Để chạy 24/24 thì start_time và end_time sẽ là: 00:00 và 23:59, tuy nhiên cần lưu ý dung lượng ổ cứng khả dụng.*
 
-Lưu ý: thời gian được xét là thời gian của máy tính chạy script, không phải thời gian của camera*
+*Lưu ý: thời gian được xét là thời gian của máy tính chạy script, không phải thời gian của camera*
 
 **-store_mode**: Chế độ lưu trữ frame. Các giá trị store_mode có thể chọn:
 
