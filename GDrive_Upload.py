@@ -11,14 +11,15 @@ from __future__ import (unicode_literals, absolute_import, print_function,
 # Import Google libraries
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from pydrive.files import GoogleDriveFileList
+from pydrive.files import GoogleDriveFileList, ApiRequestError
 import googleapiclient.errors
 
 # Import general libraries
 from argparse import ArgumentParser
-from os import chdir, listdir, stat
+import os
 from sys import exit
 import ast
+import time, random
 
 
 DEFAULT_Credential = "uitcamera_creds.txt"
@@ -121,16 +122,16 @@ def upload_files(drive, folder_id, src_folder_name):
 
     # Enter the source folder
     try:
-        chdir(src_folder_name)
+        os.chdir(src_folder_name)
     # Print error if source folder doesn't exist
     except OSError:
         print(src_folder_name + 'is missing')
     # Auto-iterate through all files in the folder.
-    AllFiles = listdir('.')
+    AllFiles = os.listdir('.')
     count = 1
     for file1 in AllFiles:
         # Check the file's size
-        statinfo = stat(file1)
+        statinfo = os.stat(file1)
         if statinfo.st_size > 0:
             print('[{}/{}] Uploading {}'.format(count, len(AllFiles), file1))
             # Upload file to folder.
@@ -147,17 +148,48 @@ def upload_files(drive, folder_id, src_folder_name):
 
 def upload_1_file(drive, folder_id, file_path):
     """ 
-        Upload files in the local folder to Google Drive 
+        Upload files in the local folder to Google Drive
+        Update 30/01/2018:
+            Handle error HTTP 403: because of too many requests per second
+            Solution: Implementing exponential backoff
+              https://developers.google.com/drive/v3/web/handle-errors#403_user_rate_limit_exceeded
+              https://stackoverflow.com/questions/42557355/user-rate-limit-exceeded-after-a-few-requests/42562397#42562397
     """
-
-    #print('Uploading {}'.format(file_path))
     # Upload file to folder.
-    f = drive.CreateFile(
-        {"parents": [{"kind": "drive#fileLink", "id": folder_id}]})
-    f.SetContentFile(file_path)
-    f.Upload()
+    
+    # wait 2 second for opencv write image
+    time.sleep(2)
 
-
+    statinfo = os.stat(file_path)
+    if statinfo.st_size == 0:
+        print(">>> Error file {} empty!!!".format(file_path))
+        return
+        
+    filename = os.path.basename(file_path)
+    success = False
+    n = 0
+    error_count = 0
+    while not success:
+        try:         
+            f = drive.CreateFile({'title':filename, "parents": [{"kind": "drive#fileLink", "id": folder_id}]})
+            f.SetContentFile(file_path)
+            f.Upload()
+            
+            time.sleep(random.randint(0,1000)/1000)
+            success = True
+        except ApiRequestError as e:
+            # handle HTTP 403
+            # exponential backoff
+            wait = (2**n) + (random.randint(0,1000)/1000)
+            error_count += 1
+            print(">>> Error msg: {}".format(e))
+            print(">>> This is {} times - file: {}".format(error_count, file_path))
+            print(">>> Try again after: {} seconds\n".format(wait))
+            
+            time.sleep(wait)
+            success = False
+            n += 1
+                
 def test():
     """ 
         Testing
@@ -190,22 +222,6 @@ def test():
 
     # Upload the files    
     upload_files(drive, folder_id, src_folder_name)
-
-    # # Authenticate to Google API
-    # drive = authenticate()
-    # # Get parent folder ID
-    # parent_folder_id = get_folder_id(drive, 'root', parent_folder_name)
-    # # Get destination folder ID
-    # folder_id = get_folder_id(drive, parent_folder_id, dst_folder_name)
-    # # Create the folder if it doesn't exists
-    # if not folder_id:
-    #     print('creating folder ' + dst_folder_name)
-    #     folder_id = create_folder(drive, dst_folder_name, parent_folder_id)
-    # else:
-    #     print('folder {0} already exists'.format(dst_folder_name))
-
-    # # Upload the files    
-    # upload_files(drive, folder_id, src_folder_name)
 
 
 #if __name__ == "__main__":

@@ -25,7 +25,6 @@ import GDrive_Upload
 
 import schedule        # install by: pip install schedule
 
-
 def checkCamera(link):
     '''check to see if capturing camera work'''
     vidcap = cv2.VideoCapture(link)
@@ -33,6 +32,19 @@ def checkCamera(link):
     
     cv2.imwrite('test.jpg', image)
 
+    print("Camera info: ")
+    # Find OpenCV version
+    (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
+    # Get fps of video
+    if int(major_ver)  < 3 :
+        fps = int(round(vidcap.get(cv2.cv.CV_CAP_PROP_FPS)))
+        print ("\tCamera\'s fps: {0}".format(fps))
+    else :
+        fps = int(round(vidcap.get(cv2.CAP_PROP_FPS)))
+        print ("\tCamera\'s fps: {0}".format(fps))
+    print('\tCamera\'s width = {}'.format(int(vidcap.get(cv2.CAP_PROP_FRAME_WIDTH))))
+    print('\tCamera\'s height = {}'.format(int(vidcap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
+    
     vidcap.release()
 
     return success
@@ -45,33 +57,52 @@ def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name =
                 => extract 1 keyframe after 2 seconds
     '''
 
+    ############################# INIT local folders ############################################## 
+    
+    # Get date info
+    date = time.strftime("%d%m%Y")
+    start_time = time.strftime("%H:%M:%S")    # Use for log
     
     if not os.path.exists(camera_name):
         os.mkdir(camera_name)
-    else:
-        
+    else:  
         if (store_mode == 3):
             # Delete local files after each day
             shutil.rmtree(camera_name)
             os.mkdir(camera_name)
   
-    # Get date info
-    date = time.strftime("%d%m%Y")
-  
+    # Create sub-folder for each day in local disk
+    folder_day = date
+    if not os.path.exists(camera_name + '/' + folder_day):
+        os.mkdir(camera_name + '/' + folder_day)
+        
     end_t = int(end_time.replace(':', ''))
   
+    
+    ############################# Calculate framestep ############################################## 
+    # opencv video capture
+    vidcap = cv2.VideoCapture(link)
+    success,image = vidcap.read()
+    success = True
+    # Find OpenCV version
+    (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
+    # Get fps of video
+    if int(major_ver)  < 3 :
+        fps = int(round(vidcap.get(cv2.cv.CV_CAP_PROP_FPS)))
+    else :
+        fps = int(round(vidcap.get(cv2.CAP_PROP_FPS)))
+        
+    framestep = max(1, min(int(round(fps / sampling_rate)), int(fps)))
+    
+    
     print("="*40)
     print('Extract frames from UIT CAMERA')
     print("Date: {}".format(time.strftime("%d/%m/%Y")))
     print("Camera Link: {}".format(link))
     print("Sampling rate: {} frames/sec".format(sampling_rate))
-    
-    # Create sub-folder for each day in local disk
-    folder_day = date
-    if not os.path.exists(camera_name + '/' + folder_day):
-        os.mkdir(camera_name + '/' + folder_day)
-    
-    
+    print ("Camera\'s fps: {0}".format(fps)) 
+    print('framestep = {} - extract one frame after each framestep'.format(framestep))
+  
     ############################## Create folders in Google Drive #############################################
     if store_mode != 0: 
         # Create folder in Google Drive
@@ -91,28 +122,10 @@ def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name =
             print('Creating folder ' + dst_folder_name)
             folder_id = GDrive_Upload.create_folder(authdrive, dst_folder_name, camera_folder_ID)
         else:
-            print('Folder {0} already exists'.format(dst_folder_name))
+            print('Drive Folder {0} already exists'.format(dst_folder_name))
         
 
-    ############################# Get Stream info from camera ############################################## 
-    # opencv video capture
-    vidcap = cv2.VideoCapture(link)
-    success,image = vidcap.read()
-    success = True
-    # Find OpenCV version
-    (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
-    # Get fps of video
-    if int(major_ver)  < 3 :
-        fps = int(round(vidcap.get(cv2.cv.CV_CAP_PROP_FPS)))
-        print ("Camera\'s fps: {0}".format(fps))
-    else :
-        fps = int(round(vidcap.get(cv2.CAP_PROP_FPS)))
-        print ("Camera\'s fps: {0}".format(fps))
-    print('Camera\'s width = {}'.format(int(vidcap.get(cv2.CAP_PROP_FRAME_WIDTH))))
-    print('Camera\'s height = {}'.format(int(vidcap.get(cv2.CAP_PROP_FRAME_HEIGHT))))
-       
-    framestep = int(round(fps / sampling_rate))
-    print('framestep = {} - extract one frame after each framestep'.format(framestep))
+    
     count_kf = 0
     count = 0
     
@@ -153,14 +166,28 @@ def ExtractFrame_FromCameraLink(link, authdrive, master_Folder_ID, camera_name =
         print("="*40) 
         print('UPLOAD FOLDER TO GOOGLE DRIVE')
         GDrive_Upload.upload_files(authdrive, folder_id, camera_name + '/' + folder_day)
+        
     
+    # Writing Log
+    with open("log.txt", "a") as log:
+        log.write("="*40 + '\r\n')
+        log.write("Date: {}\r\n".format(time.strftime("%d/%m/%Y")))
+        log.write('Camera name: {}\r\n'.format(camera_name))
+        log.write('Camera link: {}\r\n'.format(link))
+        log.write('Sampling rate: {} frames/s\r\n'.format(sampling_rate))
+        log.write('Start time: {}\r\n'.format(start_time))
+        log.write('End time: {}\r\n'.format(end_time))
+        log.write('Store mode: {}\r\n'.format(store_mode))
+        log.write('Image quality: {}\r\n'.format(img_quality))
+        log.write('\r\nTotal captured frames = {}\r\n'.format(count_kf))
+        
 
 def main():
     parser = argparse.ArgumentParser(description='Keyframes Extraction from Video')
     parser.add_argument('-camera_link', dest='camera_link', help='Link to camera stream', default="rtsp://test:12345@192.168.75.27:554")
-    parser.add_argument('-camera_name', dest='camera_name', help='Name of camera stream', default="Front_MMLAB")
+    parser.add_argument('-camera_name', dest='camera_name', help='Name of camera stream', default="Test")
     parser.add_argument('-sampling_rate', dest='sampling_rate', type=float,
-                       help='sampling rate (number of frames will be taken per second)',
+                       help='sampling rate (number of frames will be captured per second)',
                        default=1)
     parser.add_argument('-start_time', dest='start_time', type=str,
                        help='Start capturing time of the day. \nExample: input \'07:15\' for 7:15 AM',
@@ -189,12 +216,7 @@ def main():
     # ID to folder CAMERA_UIT: https://drive.google.com/drive/u/1/folders/1ZuJIs8o1SSbgGQvKZSPJ01QgK-bOC3WQ
     MASTER_FOLDER_ID = "1ZuJIs8o1SSbgGQvKZSPJ01QgK-bOC3WQ"
     
-    # DEBUG
-    #LINK = "rtsp://test:12345@192.168.75.27:554"
-    #camera_name = "Front_MMLAB"
-    #end_t = int(args.end_time.replace(':', ''))
-    #ExtractFrame_FromCameraLink(link = args.camera_link, authdrive, outFolder = args.camera_name, sampling_rate = float(args.sampling_rate), end_t)
-    
+    # Print screen
     print("="*20 + 'Capturing frames from UIT CAMERA' + "="*20)
     print('Camera name: {}'.format(args.camera_name))
     print('Camera link: {}'.format(args.camera_link))
@@ -203,8 +225,7 @@ def main():
     print('End time: {}'.format(args.end_time))
     print('Store mode: {}'.format(args.store_mode))
     print('Image quality: {}'.format(args.image_quality))
-    
-    
+        
     print('\nChecking capturing camera...')
     if checkCamera(args.camera_link):
         print('Capturing status: OK!')
@@ -216,6 +237,15 @@ def main():
     print('\nCurrent system time is: {}'.format(time.strftime("%H:%M:%S")))
     print('Waiting to start time ...')
     
+    # DEBUG
+    #LINK = "rtsp://test:12345@192.168.75.27:554"
+    #camera_name = "Front_MMLAB"
+    #end_t = int(args.end_time.replace(':', ''))
+    
+    #ExtractFrame_FromCameraLink(args.camera_link, authdrive, MASTER_FOLDER_ID, 
+    #                      args.camera_name, float(args.sampling_rate), '23:59', args.store_mode, args.image_quality)
+    
+
     schedule.every().day.at(args.start_time).do(ExtractFrame_FromCameraLink, args.camera_link, authdrive, MASTER_FOLDER_ID, 
                           args.camera_name, float(args.sampling_rate), args.end_time, args.store_mode, args.image_quality)
     
