@@ -88,4 +88,13 @@ Ví dụ:
 
     Front_MMLAB_29012018_07-05-12___243.jpg
 
+### Error and Handle
+**ERROR HTTP 403: User rate limit exceeded**: 
 
+    >>> Error msg: <HttpError 403 when requesting https://www.googleapis.com/upload/drive/v2/files?uploadType=resumable&alt=json returned "User rate limit exceeded">
+    >>> This is 2 times - file: Test/30012018/Test_30012018_12-24-52___483.jpg
+    >>> Try again after: 2.038 seconds
+    
+Lỗi này có thể xảy ra khi Uploading Google Drive sử dụng store_mode 2 hoặc 3. Do quá nhiều requests đến google drive server (Limit: 10 requests/second/user). Khi gặp lỗi này script sẽ thực hiện [Exponential Backoff](https://developers.google.com/drive/v3/web/handle-errors#exponential-backoff) đợi một lúc sau để upload lại file này.
+
+Để giải quyết triệt để nên cân nhắc dùng store_mode 1 hoặc chỉ dùng một google account để uploading cho 1 camera duy nhất.
